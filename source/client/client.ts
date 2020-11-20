@@ -21,6 +21,7 @@ import { EntityRowFactory } from "../ui/EntityRow";
 import { PlaybackButtonFactory } from "../ui/PlaybackButton";
 import { EntityNavLinkFactory } from "../ui/EntityNavLinkFactory";
 import { PlaylistsClient } from "../playlists/client";
+import { DatabaseClient } from "../database/client";
 
 
 
@@ -40,6 +41,7 @@ function makeUrl(tail: string): string {
 }
 
 let player = new client.ContextClient(makeUrl(`context/?type=browser&name=Orbit`));
+let databaseClient = new DatabaseClient(makeUrl(`database/`));
 let playlists = new PlaylistsClient(makeUrl(`playlists/`));
 
 window.addEventListener("focus", () => {
@@ -48,6 +50,9 @@ window.addEventListener("focus", () => {
 	}
 	if (!playlists.isOnline()) {
 		playlists.reconnect();
+	}
+	if (!databaseClient.isOnline()) {
+		databaseClient.reconnect();
 	}
 	req<{}, {}>("/discover", {}, () => {});
 });
@@ -1155,6 +1160,7 @@ tokenobs.addObserver((token2) => {
 	token = token2;
 	player.authenticate(token);
 	playlists.authenticate(token);
+	databaseClient.authenticate(token);
 });
 async function getToken(): Promise<string | undefined> {
 	return new Promise((resolve, reject) => {

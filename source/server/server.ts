@@ -10,6 +10,7 @@ import * as indexer from "../database/indexer";
 import * as subsearch from "./subsearch";
 import * as context from "../player/";
 import * as playlists from "../playlists/";
+import * as database from "../database/";
 import * as chromecasts from "../chromecast/chromecasts";
 import * as airplay from "../airplay/";
 import * as is from "../is";
@@ -112,6 +113,7 @@ let send_data = (file_id: string, request: libhttp.IncomingMessage, response: li
 
 const contextServer = new context.server.ContextServer();
 const playlistsServer = new playlists.server.PlaylistsServer();
+const databaseServer = new database.server.DatabaseServer();
 
 let indexTimer: NodeJS.Timeout | undefined;
 
@@ -134,6 +136,9 @@ function requestHandler(request: libhttp.IncomingMessage, response: libhttp.Serv
 	}
 	if (/^[/]sockets[/]playlists[/]/.test(path)) {
 		return playlistsServer.getRequestHandler()(request, response);
+	}
+	if (/^[/]sockets[/]database[/]/.test(path)) {
+		return databaseServer.getRequestHandler()(request, response);
 	}
 	let startMs = Date.now();
 	response.on("finish", () => {

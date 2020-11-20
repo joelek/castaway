@@ -1,0 +1,18 @@
+{
+	SetToken: {
+		token?: string
+	},
+
+	PlaylistRequest: string,
+	PlaylistResponse: ./schema/Playlist,
+	PlaylistInvalidate: string,
+
+	PlaylistItemRequest: string,
+	PlaylistItemResponse: ./schema/PlaylistItem,
+	PlaylistItemInvalidate: string,
+
+	Batch: {
+		playlists: ./schema/Playlist[],
+		playlist_items: ./schema/PlaylistItem[]
+	}
+}
